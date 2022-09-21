@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div id="error_login" class="bg-danger text-light"></div>
+        <form>
+            <div class="form-group">
+                <label for="">email</label>
+                <input type="email" id="email" class="form-control" placeholder="" />
+
+            </div>
+            <div class="form-group">
+                <label for="">password</label>
+                <input type="password" id="password" class="form-control" placeholder="" />
+
+            </div>
+            <a href="register.html" target="_blank" rel="noopener noreferrer">register</a>
+            <br /><br />
+            <button id="loginform" class="btn btn-primary">
+                login
+            </button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
+
+    <script src="./firebase.js"></script>
+    <script>
+
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const loginform = document.getElementById("loginform");
+        const error_login = document.getElementById("error_login");
+
+        loginform.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const emaliValue = email.value.trim();
+            const passwordValue = password.value.trim();
+            console.log(emaliValue);
+
+            firebase.auth().signInWithEmailAndPassword(emaliValue, passwordValue)
+                .then((userCredential) => {
+
+                    location.replace("welcome.html");
+
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    document.getElementById("error_login").innerHTML = errorMessage
+                });
+        })
+    </script>
+</body>
+
+</html>

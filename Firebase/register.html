@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div id="massage_show" class="bg-danger text-light"></div>
+        <form>
+            <div class="form-group">
+                <label for="">email</label>
+                <input type="email" id="email" class="form-control" placeholder="" />
+
+            </div>
+            <div class="form-group">
+                <label for="">password</label>
+                <input type="password" id="password" class="form-control" placeholder="" />
+
+            </div>
+            <a href="login.html" target="_blank" rel="noopener noreferrer">login</a>
+            <br /><br />
+            <button type="submit" id="register" class="btn btn-primary">
+                submit
+            </button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
+
+    <script src="./firebase.js"></script>
+    <script>
+
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const register = document.getElementById("register");
+        const massage_show = document.getElementById("massage_show");
+
+        register.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const emaliValue = email.value.trim();
+            const passwordValue = password.value.trim();
+            console.log(emaliValue);
+
+            firebase.auth().createUserWithEmailAndPassword(emaliValue, passwordValue)
+                .then(() => {
+                    location.replace("login.html");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    massage_show.innerHTML = errorMessage;
+                });
+        })
+
+
+
+    </script>
+</body>
+
+</html>
