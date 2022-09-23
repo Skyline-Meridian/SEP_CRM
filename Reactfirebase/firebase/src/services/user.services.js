@@ -1,47 +1,31 @@
+import { db } from "../components/firebaseConfig";
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../components/firebaseConfig";
+  collection,
+  getDoc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
-class Authentication {
-  login = async (email, password) => {
-    let data;
-    await signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential?.user?.uid;
-        return (data = {
-          id:user
-        });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // console.log(errorCode);
-        return (data = {
-          errorCode:errorCode
-        });
-      });
-    return data;
-  };
+const userCollectionRef=collection(db,"users");
 
-  register = async (email, password) => {
-    let data;
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        return (data = user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        return (data = errorCode);
-      });
+class UsersDataService{
+    addUser=(newUser)=>{
+        return addDoc(userCollectionRef,newUser);
+    }
 
-    return data;
-  };
+    getAllUsers=()=>{
+        return getDocs(userCollectionRef);
+    }
+
+    getUser=(id)=>{
+        const userDoc= doc(db,"users",id)
+        return getDoc(userDoc);
+    }
+    
+    
 }
 
-export default new Authentication();
+export default new UsersDataService();

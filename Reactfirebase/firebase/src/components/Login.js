@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Authentication from "../services/user.services";
+import Authentication from "../services/auth.services";
 import styles from "./styles/login.module.css";
 
 export default function Login() {
@@ -18,7 +18,7 @@ export default function Login() {
     <>
       <div className={`${styles.box_form}`}>
         <div className={`${styles.left}`}>
-          <img src="https://canopylab.com/wp-content/uploads/2020/05/Working-with-adaptive-quizzes-A-beginners-guide.jpg" />
+          <img src="https://blog.hubspot.com/hubfs/google-quiz.jpg" />
         </div>
         <div className={`${styles.right}`}>
         {
@@ -26,7 +26,7 @@ export default function Login() {
         }
           <h5>Login</h5>
           <p>
-            Don't have an account?{" "}
+            Do have a account?{" "}
             <Link to="/register">Creat Your Account</Link> it takes less than a
             minute
           </p>
