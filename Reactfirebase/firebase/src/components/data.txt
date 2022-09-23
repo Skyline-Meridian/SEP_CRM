@@ -1,0 +1,16 @@
+<!-- login -->
+      <form onSubmit={handleSubmit}>
+        <label>Email</label>
+        <input type="email" 
+        value={user.email} 
+        onChange={(e) => {
+          setUser({ ...user, email: e.target.value })
+        }} 
+        />
+        <label>password</label>
+        <input type="password" value={user.password} onChange={(e) => {
+          setUser({ ...user, password: e.target.value })
+        }} />
+        <button>login</button>
+      </form>
+      

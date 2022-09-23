@@ -33,38 +33,8 @@
         </form>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-auth.js"></script>
-
-    <script src="./firebase.js"></script>
-    <script>
-
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const loginform = document.getElementById("loginform");
-        const error_login = document.getElementById("error_login");
-
-        loginform.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            const emaliValue = email.value.trim();
-            const passwordValue = password.value.trim();
-            console.log(emaliValue);
-
-            firebase.auth().signInWithEmailAndPassword(emaliValue, passwordValue)
-                .then((userCredential) => {
-
-                    location.replace("welcome.html");
-
-                })
-                .catch((error) => {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    document.getElementById("error_login").innerHTML = errorMessage
-                });
-        })
-    </script>
+    <script src="./firebase.js" type="module"></script>
+   
 </body>
 
 </html>
