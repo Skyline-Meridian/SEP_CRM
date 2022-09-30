@@ -13,4 +13,2765 @@
         }} />
         <button>login</button>
       </form>
+
+
+      import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import "./styles/admin.css";
+
+export default function Admin() {
+  const [quiz, setQuiz] = useState({
+    date: "",
+    startTime: "",
+    quizQuestionName: "",
+    answer: "",
+    questions: [
+
+    ],
+  });
+  const [dateValue, setDateValue] = useState("");
+  const [show, setShow] = useState([]);
+  const [showHide, setShowHide] = useState(false);
+  const [currentItem, setCurrentItem] = useState("");
+
+  const handelInput = (e) => {
+    e.preventDefault();
+
+    let id = 1;
+    if (localStorage.getItem("quizs")) {
+      id = localStorage.getItem("quizs").length + 1;
+    }
+
+    const data = {
+      id: id,
+      date: quiz.date,
+      startTime: quiz.startTime,
+      quizQuestionName: quiz.quizQuestionName,
+      questions: quiz.questions,
+    };
+
+    console.log(data);
+    // remove localStorage add api
+
+    if (localStorage.getItem("quizs") == null) {
+      localStorage.setItem("quizs", "[]");
+    }
+    var update = JSON.parse(localStorage.getItem("quizs"));
+    update.push(data);
+    localStorage.setItem("quizs", JSON.stringify(update));
+
+    updateData();
+  };
+
+  const updateData = () => {
+    const res = localStorage.getItem("quizs");
+    const convert = JSON.parse(res);
+    setShow(convert);
+  };
+  useEffect(() => {
+    if (localStorage.getItem("quizs") == null) {
+      localStorage.setItem("quizs", "[]");
+    }
+    updateData();
+
+    var today = new Date();
+    var y = today.toLocaleString("en-IN", { weekday: "long" });
+    var d = today.toLocaleString("en-IN", { day: "2-digit" });
+    var m = today.toLocaleString("en-IN", { month: "long" });
+    var r = y + " " + d + " " + m;
+    setDateValue(r);
+  }, []);
+
+  // add
+
+  const pushItem = () => {
+    if (currentItem) {
+      console.log(currentItem);
+      const data={
+        question: currentItem.question,
+        A: currentItem.A,
+        B: currentItem.B,
+        C: currentItem.C,
+        D: currentItem.D,
+        time: currentItem.time,
+        answer: currentItem.answer,
+      }
+      quiz.questions.push(data);
+      setCurrentItem(data);
+    }
+  };
+
+  const removeItem = (_item) => {
+    const updatedItemList = [];
+    quiz.questions.map((item, key) => {
+      if (item !== _item) {
+        updatedItemList.push(item);
+      }
+    });
+    setQuiz({ ...quiz, questions: updatedItemList });
+  };
+
+  return (
+    <>
+      {/* <Navbar/> */}
+      <div className="card">
+        {dateValue}
+        <br />
+        <br />
+        <div className="container">
+          <label htmlFor="quizQuestionName">Quiz Question Name</label>
+          <input
+            type="text"
+            id="quizQuestionName"
+            name="quizQuestionName"
+            required
+            placeholder="quiz Question Name"
+            value={quiz.quizQuestionName}
+            onChange={(e) => {
+              setQuiz({ ...quiz, quizQuestionName: e.target.value });
+              console.log(e);
+            }}
+          />
+          <label htmlFor="date">Create Question</label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            required
+            value={quiz.data}
+            onChange={(e) => {
+              setQuiz({ ...quiz, date: e.target.value });
+              console.log(e);
+            }}
+          />
+          <label htmlFor="startTime">Start Time</label>
+          <input
+            type="time"
+            id="startTime"
+            name="startTime"
+            required
+            value={quiz.startTime}
+            onChange={(e) => {
+              setQuiz({ ...quiz, startTime: e.target.value });
+              console.log(e);
+            }}
+          />
+          {/* Question */}
+          <div>
+            <label htmlFor="question">Question</label>
+            <input
+              type="text"
+              id="question"
+              name="firstname"
+              placeholder="Your Question.."
+              value={currentItem.question}
+              onChange={(e) => {
+                setCurrentItem({ ...currentItem, question: e.target.value });
+              }}
+            />
+            {/* opstion */}
+            <div className="row">
+              <div className="from_group">
+                <input
+                  type="radio"
+                  id="A"
+                  name="fav_language"
+                  value="A"
+                  onChange={(e) => {
+                    setCurrentItem({ ...currentItem, answer: e.target.value });
+                  }}
+                />
+                <label htmlFor="A">A</label>
+                <input
+                  type="text"
+                  id="A"
+                  name="lastname"
+                  placeholder="Your Answer"
+                  value={currentItem.A}
+                  onChange={(e) => {
+                    setCurrentItem({ ...currentItem, A: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="from_group">
+                <input type="radio" id="B" name="fav_language" value="B" />
+                <label htmlFor="B">B</label>
+                <input
+                  type="text"
+                  id="B"
+                  name="lastname"
+                  placeholder="Your Answer"
+                  value={currentItem.B}
+                  onChange={(e) => {
+                    setCurrentItem({ ...currentItem, B: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="from_group">
+                <input type="radio" id="C" name="fav_language" value="C" />
+                <label htmlFor="C">C</label>
+                <input
+                  type="text"
+                  id="C"
+                  name="lastname"
+                  placeholder="Your Answer"
+                  value={currentItem.C}
+                  onChange={(e) => {
+                    setCurrentItem({ ...currentItem, C: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="from_group">
+                <input type="radio" id="D" name="fav_language" value="D" />
+                <label htmlFor="D">D</label>
+                <input
+                  type="text"
+                  id="D"
+                  name="lastname"
+                  placeholder="Your Answer"
+                  value={currentItem.D}
+                  onChange={(e) => {
+                    setCurrentItem({ ...currentItem, D: e.target.value });
+                  }}
+                />
+              </div>
+            </div>
+            <label htmlFor="time">Time Set Per Question</label>
+            <input
+              type="time"
+              id="time"
+              name="lastname"
+              value={currentItem.time}
+              onChange={(e) => {
+                setCurrentItem({ ...currentItem, time: e.target.value });
+              }}
+            />
+            <input type="submit" defaultValue="Submit" onClick={handelInput} />
+          </div>
+          {/* show data */}
+          <label htmlFor="">Create Question</label>
+          <p className="add_btn" onClick={pushItem}>Add</p>
+                  <div className="item_list_container">
+                    {
+                      quiz.questions.map((item, key) => (
+                      <div className="item" key={key}>
+                        <p>{item.question}</p>
+                        <p>{item.A}</p>
+                        <p>{item.B}</p>
+                        <p>{item.C}</p>
+                        <p>{item.D}</p>
+                        <p>{item.time}</p>
+                        <p>{item.answer}</p>
+                        <p
+                          className="remove_icon"
+                          onClick={() => {
+                            removeItem(item);
+                          }}
+                        >remove</p>
+                        {/* <button type="button" value={item} onClick={removeItem}><AiOutlineClose/></button> */}
+                      </div>
+                    ))}
+                  </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
       
+      ----------------------user+--------------------
+                              <h5>{index+1}</h5>
+                          <div className="group">
+                            <label htmlFor="question" id="label">{m.question}</label>
+                            <div className="row">
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.A}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "A",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.A}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "A",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.A}</label>
+                              </div>
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.B}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "B",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.B}</label>
+                              </div>
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.C}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.C}</label>
+                              </div>
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.D}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "D",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.D}</label>
+                              </div>
+                            </div>
+                          </div>
+
+
+                          ------------------26----------uer-------
+
+                          import { async } from "@firebase/util";
+import React, { useEffect, useState } from "react";
+import QuizsDataService from "../services/quiz.services";
+import UserAnswerMapService from "../services/userAnswerMap.services";
+import Authentication from "../services/auth.services";
+import Navbar from "./Navbar";
+import "./styles/user.css";
+export default function User() {
+  const [quiz, setQuiz] = useState("");
+  const [Seconds, setSeconds] = useState(0);
+  const [show, setShow] = useState([]);
+  const [dateValue, setDateValue] = useState("");
+
+  const handelInput = (e) => {
+    e.preventDefault();
+  };
+  //
+
+  useEffect(() => {
+    const getAlldata = async () => {
+      const data = await QuizsDataService.getAllQuizs();
+      // console.log(data?.docs?.map((doc)=>({...doc.data()})));
+      setShow(data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getAlldata();
+  }, []);
+
+  useEffect(() => {
+    var today = new Date();
+    var y = today.toLocaleString("en-IN", { year: "numeric" });
+    var d = today.toLocaleString("en-IN", { day: "2-digit" });
+    var m = today.toLocaleString("en-IN", { month: "2-digit" });
+    var r = y + "-" + m + "-" + d;
+    console.log(r);
+    setDateValue(r);
+  }, []);
+
+  const selectHendler = async (e) => {
+    console.log(e);
+    const UserId = await Authentication.exitsUser();
+    const eventName = e?.quizQuestionName + e?.date;
+    // console.log(UserId?.id);
+    const ExitFind = await UserAnswerMapService.getUserAnswerMap(
+      "eventName.userId",
+      UserId?.id
+    );
+    const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    console.log(ExitFindValue);
+
+    if (ExitFindValue.length == 1) {
+      if (e?.userAnswer == e?.currectAnswer) {
+        const firstTimeData = {
+          eventName: {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          },
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+
+        if (dataValue == "update") {
+          const secondTimeData = {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: true,
+          };
+
+          const dataValueSecond =
+            await UserAnswerMapService.updateUserAnswerMapService(
+              eventName,
+              secondTimeData
+            );
+
+          console.log(dataValueSecond);
+        }
+
+        console.log(dataValue);
+      } else {
+        //
+
+        const firstTimeData = {
+          quizId: e?.quizId,
+          userId: UserId?.id,
+          userMap: [
+            {
+              questionNumber: e?.questionNumber,
+              userAnswer: e?.userAnswer,
+              currectAnswer: e?.currectAnswer,
+              IscurrectAnswer: false,
+            },
+          ],
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+
+        if (dataValue == "update") {
+          const secondTimeData = {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: false,
+          };
+
+          const dataValueSecond =
+            await UserAnswerMapService.updateUserAnswerMapService(
+              eventName,
+              secondTimeData
+            );
+
+          console.log(dataValueSecond);
+        }
+      }
+    } else {
+    }
+
+    //     if (e?.userAnswer == e?.currectAnswer) {
+    //       const firstTimeData = {
+    // eventName:{
+    //   quizId: e?.quizId,
+    //   userId: UserId?.id,
+    //   userMap: [
+    //     {
+    //       questionNumber: e?.questionNumber,
+    //       userAnswer: e?.userAnswer,
+    //       currectAnswer: e?.currectAnswer,
+    //       IscurrectAnswer: true,
+    //     },
+    //   ]
+    // }
+    //       };
+    //       const dataValue = await UserAnswerMapService.allRedayExitDoc(
+    //         eventName,
+    //         firstTimeData
+    //       );
+
+    //       if (dataValue == "update") {
+    //         const secondTimeData = {
+    //           questionNumber: e?.questionNumber,
+    //           userAnswer: e?.userAnswer,
+    //           currectAnswer: e?.currectAnswer,
+    //           IscurrectAnswer: true,
+    //         };
+
+    //         const dataValueSecond =
+    //           await UserAnswerMapService.updateUserAnswerMapService(
+    //             eventName,
+    //             secondTimeData
+    //           );
+
+    //         console.log(dataValueSecond);
+    //       }
+
+    //       console.log(dataValue);
+    //     } else {
+    //       //
+
+    //       const firstTimeData = {
+    //         quizId: e?.quizId,
+    //         userId: UserId?.id,
+    //         userMap: [
+    //           {
+    //             questionNumber: e?.questionNumber,
+    //             userAnswer: e?.userAnswer,
+    //             currectAnswer: e?.currectAnswer,
+    //             IscurrectAnswer: false,
+    //           },
+    //         ],
+    //       };
+    //       const dataValue = await UserAnswerMapService.allRedayExitDoc(
+    //         eventName,
+    //         firstTimeData
+    //       );
+
+    //       if (dataValue == "update") {
+    //         const secondTimeData = {
+    //           questionNumber: e?.questionNumber,
+    //           userAnswer: e?.userAnswer,
+    //           currectAnswer: e?.currectAnswer,
+    //           IscurrectAnswer: false,
+    //         };
+
+    //         const dataValueSecond =
+    //           await UserAnswerMapService.updateUserAnswerMapService(
+    //             eventName,
+    //             secondTimeData
+    //           );
+
+    //         console.log(dataValueSecond);
+    //       }
+    //     }
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div className="card">
+        <div className="container">
+          <label htmlFor="date">Question answer</label>
+          {show?.map((e) => {
+            {
+              /* console.log(e);
+            if (e?.date == dateValue && e?.startTime == "17:07") {
+              console.log("today match");
+            } else {
+              console.log("match end");
+            } */
+            }
+            return (
+              <>
+                <div className="main">
+                  <h1 className="labelMain">
+                    {e.quizQuestionName} {e?.date}
+                  </h1>
+                  {e?.date == dateValue ? ( //&& e?.startTime=="20:07"
+                    e?.questions?.map((m, index) => {
+                      return (
+                        <>
+                          <h5>{index + 1}</h5>
+                          <div className="group">
+                            <label htmlFor="question" id="label">
+                              {m.question}
+                            </label>
+                            <div className="row">
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.A}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "A",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.A}</label>
+                              </div>
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.B}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "B",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.B}</label>
+                              </div>
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.C}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.C}</label>
+                              </div>
+                              <div className="from_group">
+                                <input
+                                  type="radio"
+                                  id="vehicle1"
+                                  name="vehicle1"
+                                  value={m?.D}
+                                  onClick={() => {
+                                    const data = {
+                                      questionNumber: index + 1,
+                                      userAnswer: "D",
+                                      currectAnswer: m?.answer,
+                                      quizId: e?.id,
+                                      quizQuestionName: e?.quizQuestionName,
+                                      date: e?.date,
+                                    };
+                                    selectHendler(data);
+                                  }}
+                                />
+                                <label for="vehicle1"> {m?.D}</label>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })
+                  ) : (
+                    <h1 className="labelMain red">Match End</h1>
+                  )}
+                  {e?.date == dateValue ? (
+                    <>
+                      <button>Submit</button>
+                    </>
+                  ) : null}
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
+
+--------------------------------------------------------------user-19-28
+import { async } from "@firebase/util";
+import React, { useEffect, useState } from "react";
+import QuizsDataService from "../services/quiz.services";
+import UserAnswerMapService from "../services/userAnswerMap.services";
+import Authentication from "../services/auth.services";
+import ConfigService from "../services/config.services";
+
+import Navbar from "./Navbar";
+import "./styles/user.css";
+export default function User() {
+  const [quiz, setQuiz] = useState("");
+  const [Seconds, setSeconds] = useState(0);
+  const [show, setShow] = useState([]);
+  const [dateValue, setDateValue] = useState("");
+  const [configValue, setConfigValue] = useState([]);
+  const [coValue, setCoValue] = useState("");
+
+  const handelInput = (e) => {
+    e.preventDefault();
+  };
+  //
+
+  useEffect(() => {
+    const getAlldata = async () => {
+      const data = await QuizsDataService.getAllQuizs();
+      console.log(data?.docs?.map((doc) => ({ ...doc.data() })));
+      setShow(data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getAlldata();
+  }, []);
+
+  useEffect(() => {
+    var today = new Date();
+    var y = today.toLocaleString("en-IN", { year: "numeric" });
+    var d = today.toLocaleString("en-IN", { day: "2-digit" });
+    var m = today.toLocaleString("en-IN", { month: "2-digit" });
+    var r = y + "-" + m + "-" + d;
+    console.log(r);
+    setDateValue(r);
+  }, []);
+  useEffect(() => {
+    const checkTime = (i) => {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    };
+
+    const startTime = () => {
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      // add a zero in front of numbers<10
+      m = checkTime(m);
+      s = checkTime(s);
+      setSeconds(h + ":" + m + ":" + s);
+      setTimeout(function () {
+        startTime();
+      }, 500);
+    };
+    startTime();
+  }, []);
+
+  useEffect(() => {
+    const configdData = async () => {
+      const config = await ConfigService.getAllConfig();
+      setConfigValue(
+        config?.docs?.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+      console.log(config);
+    };
+    configdData();
+  }, []);
+
+  useEffect(() => {
+    const questionFind = async () => {
+      const UserId = await Authentication.exitsUser();
+      console.log(UserId);
+      const ExitFind = await UserAnswerMapService.getUserAnswerMap(
+        "userId",
+        UserId?.id
+      );
+      const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(ExitFindValue);
+      setCoValue(ExitFindValue?.length+1)
+      console.log(ExitFindValue?.length+1);
+      
+      if (ExitFindValue?.length == coValue) {
+        setQuiz(false);
+      } else {
+       
+        setQuiz(true);
+      }
+    };
+    questionFind();
+  }, []);
+
+  const selectHendler = async (e) => {
+    console.log(e);
+    const UserId = await Authentication.exitsUser();
+    const eventName = e?.quizQuestionName + e?.date;
+
+    const ExitFind = await UserAnswerMapService.getUserAnswerMap(
+      "userId",
+      UserId?.id
+    );
+
+    const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+
+    if (ExitFindValue?.length == 0) {
+      // new create
+      if (e?.userAnswer == e?.currectAnswer) {
+        const firstTimeData = {
+          // eventName: {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          // },
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+  
+        if (dataValue == "update") {
+          const secondTimeData = {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          };
+  
+          const dataValueSecond =
+            await UserAnswerMapService.addUserAnswerMap(
+              secondTimeData,
+            );
+  
+          console.log(dataValueSecond);
+        }
+  
+        console.log(dataValue);
+      } else {
+        // //
+  
+        // const firstTimeData = {
+        //   quizId: e?.quizId,
+        //   userId: UserId?.id,
+        //   userMap: [
+        //     {
+        //       questionNumber: e?.questionNumber,
+        //       userAnswer: e?.userAnswer,
+        //       currectAnswer: e?.currectAnswer,
+        //       IscurrectAnswer: false,
+        //     },
+        //   ],
+        // };
+        // const dataValue = await UserAnswerMapService.allRedayExitDoc(
+        //   eventName,
+        //   firstTimeData
+        // );
+  
+        // if (dataValue == "update") {
+        //   const secondTimeData = {
+        //     quizId: e?.quizId,
+        //     userId: UserId?.id,
+        //     userMap: [
+        //       {
+        //         questionNumber: e?.questionNumber,
+        //         userAnswer: e?.userAnswer,
+        //         currectAnswer: e?.currectAnswer,
+        //         IscurrectAnswer: false,
+        //       },
+        //     ],
+        //   };
+  
+        //   const dataValueSecond =
+        //     await UserAnswerMapService.updateUserAnswerMapService(
+        //       eventName,
+        //       secondTimeData
+        //     );
+  
+        //   console.log(dataValueSecond);
+        // }
+      }
+    } else {
+      if (e?.userAnswer == e?.currectAnswer) {
+        const firstTimeData = {
+          // eventName: {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          // },
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+  
+        if (dataValue == "update") {
+          const secondTimeData = {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: true,
+          };
+  
+          const dataValueSecond =
+            await UserAnswerMapService.updateUserAnswerMapService(
+              eventName,
+              secondTimeData,
+            );
+  
+          console.log(dataValueSecond);
+        }
+  
+        console.log(dataValue);
+      } else {
+        //
+  
+        const firstTimeData = {
+          quizId: e?.quizId,
+          userId: UserId?.id,
+          userMap: [
+            {
+              questionNumber: e?.questionNumber,
+              userAnswer: e?.userAnswer,
+              currectAnswer: e?.currectAnswer,
+              IscurrectAnswer: false,
+            },
+          ],
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+  
+        if (dataValue == "update") {
+          const secondTimeData = {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: false,
+          };
+  
+          const dataValueSecond =
+            await UserAnswerMapService.updateUserAnswerMapService(
+              eventName,
+              secondTimeData
+            );
+  
+          console.log(dataValueSecond);
+        }
+      }
+     
+    }
+
+
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div className="card">
+        {Seconds}
+        <div className="container">
+          <label htmlFor="date">Question answer</label>
+          {show?.map((e) => {
+            return (
+              <>
+                <div className="main">
+                  <h1 className="labelMain">
+                    {e.quizQuestionName} {e?.date}
+                  </h1>
+                  {e?.date == dateValue ? ( // && Seconds=="20:05:00"?
+                    e?.questions?.map((m, index) => {
+
+                      return index +1 == coValue ? (
+                        <>
+                          {quiz ? (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </>
+                      ) : null;
+                    })
+                  ) : (
+                    <h1 className="labelMain red">Match End</h1>
+                  )}
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
+
+---------------------------------------uer-------------27----
+import { async } from "@firebase/util";
+import React, { useEffect, useState } from "react";
+import QuizsDataService from "../services/quiz.services";
+import UserAnswerMapService from "../services/userAnswerMap.services";
+import Authentication from "../services/auth.services";
+import ConfigService from "../services/config.services";
+
+import Navbar from "./Navbar";
+import "./styles/user.css";
+export default function User() {
+  const [quiz, setQuiz] = useState("");
+  const [Seconds, setSeconds] = useState(0);
+  const [show, setShow] = useState([]);
+  const [dateValue, setDateValue] = useState("");
+  const [configValue, setConfigValue] = useState([]);
+  const [coValue, setCoValue] = useState(0);
+
+  const handelInput = (e) => {
+    e.preventDefault();
+  };
+  //
+
+  useEffect(() => {
+    const getAlldata = async () => {
+      const data = await QuizsDataService.getAllQuizs();
+      console.log(data?.docs?.map((doc) => ({ ...doc.data() })));
+      setShow(data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getAlldata();
+  }, []);
+
+  useEffect(() => {
+    var today = new Date();
+    var y = today.toLocaleString("en-IN", { year: "numeric" });
+    var d = today.toLocaleString("en-IN", { day: "2-digit" });
+    var m = today.toLocaleString("en-IN", { month: "2-digit" });
+    var r = y + "-" + m + "-" + d;
+    console.log(r);
+    setDateValue(r);
+  }, []);
+  useEffect(() => {
+    const checkTime = (i) => {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    };
+
+    const startTime = () => {
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      // add a zero in front of numbers<10
+      m = checkTime(m);
+      s = checkTime(s);
+      setSeconds(h + ":" + m + ":" + s);
+      setTimeout(function () {
+        startTime();
+      }, 500);
+    };
+    startTime();
+  }, []);
+
+  useEffect(() => {
+    const configdData = async () => {
+      const config = await ConfigService.getAllConfig();
+      setConfigValue(
+        config?.docs?.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+      console.log(config);
+    };
+    configdData();
+  }, []);
+
+  useEffect(() => {
+    const questionFind = async () => {
+      const UserId = await Authentication.exitsUser();
+      console.log(UserId);
+      const ExitFind = await UserAnswerMapService.multipleConditional(
+        "userId",UserId?.id,"quizId","xx3qTiT4a2zgTAUfpSFv"
+      );
+      const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(ExitFindValue);
+
+      setCoValue(ExitFindValue?.length+1)
+      console.log(ExitFindValue?.length+1);
+      console.log(coValue);
+      
+      if (ExitFindValue?.length+1 == coValue) {
+        setQuiz(false);
+      } else {
+       
+        setQuiz(true);
+      }
+    };
+    questionFind();
+  }, []);
+
+  const selectHendler = async (e) => {
+    console.log(e);
+    const UserId = await Authentication.exitsUser();
+    const eventName =  UserId?.id+e?.quizQuestionName+e?.date;
+
+    const ExitFind = await UserAnswerMapService.getUserAnswerMap(
+      "userId",
+      UserId?.id
+    );
+
+    const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+
+    if (ExitFindValue?.length == 0) {
+      // new create
+      if (e?.userAnswer == e?.currectAnswer) {
+        const firstTimeData = {
+          // eventName: {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          // },
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+  
+        if (dataValue == "update") {
+          const secondTimeData = {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          };
+  
+          const dataValueSecond =
+            await UserAnswerMapService.addUserAnswerMap(
+              secondTimeData,
+            );
+  
+          console.log(dataValueSecond);
+        }
+  
+        console.log(dataValue);
+      } else {
+        // //
+  
+        // const firstTimeData = {
+        //   quizId: e?.quizId,
+        //   userId: UserId?.id,
+        //   userMap: [
+        //     {
+        //       questionNumber: e?.questionNumber,
+        //       userAnswer: e?.userAnswer,
+        //       currectAnswer: e?.currectAnswer,
+        //       IscurrectAnswer: false,
+        //     },
+        //   ],
+        // };
+        // const dataValue = await UserAnswerMapService.allRedayExitDoc(
+        //   eventName,
+        //   firstTimeData
+        // );
+  
+        // if (dataValue == "update") {
+        //   const secondTimeData = {
+        //     quizId: e?.quizId,
+        //     userId: UserId?.id,
+        //     userMap: [
+        //       {
+        //         questionNumber: e?.questionNumber,
+        //         userAnswer: e?.userAnswer,
+        //         currectAnswer: e?.currectAnswer,
+        //         IscurrectAnswer: false,
+        //       },
+        //     ],
+        //   };
+  
+        //   const dataValueSecond =
+        //     await UserAnswerMapService.updateUserAnswerMapService(
+        //       eventName,
+        //       secondTimeData
+        //     );
+  
+        //   console.log(dataValueSecond);
+        // }
+      }
+    } else {
+      if (e?.userAnswer == e?.currectAnswer) {
+        const firstTimeData = {
+          // eventName: {
+            quizId: e?.quizId,
+            userId: UserId?.id,
+            userMap: [
+              {
+                questionNumber: e?.questionNumber,
+                userAnswer: e?.userAnswer,
+                currectAnswer: e?.currectAnswer,
+                IscurrectAnswer: true,
+              },
+            ],
+          // },
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+  
+        if (dataValue == "update") {
+          const secondTimeData = {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: true,
+          };
+  
+          const dataValueSecond =
+            await UserAnswerMapService.updateUserAnswerMapService(
+              eventName,
+              secondTimeData,
+            );
+  
+          console.log(dataValueSecond);
+        }
+  
+        console.log(dataValue);
+      } else {
+        //
+  
+        const firstTimeData = {
+          quizId: e?.quizId,
+          userId: UserId?.id,
+          userMap: [
+            {
+              questionNumber: e?.questionNumber,
+              userAnswer: e?.userAnswer,
+              currectAnswer: e?.currectAnswer,
+              IscurrectAnswer: false,
+            },
+          ],
+        };
+        const dataValue = await UserAnswerMapService.allRedayExitDoc(
+          eventName,
+          firstTimeData
+        );
+  
+        if (dataValue == "update") {
+          const secondTimeData = {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: false,
+          };
+  
+          const dataValueSecond =
+            await UserAnswerMapService.updateUserAnswerMapService(
+              eventName,
+              secondTimeData
+            );
+  
+          console.log(dataValueSecond);
+        }
+      }
+     
+    }
+
+
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div className="card">
+        {Seconds}
+        <div className="container">
+          <label htmlFor="date">Question answer</label>
+          {show?.map((e) => {
+            return (
+              <>
+                <div className="main">
+                  <h1 className="labelMain">
+                    {e.quizQuestionName} {e?.date}
+                  </h1>
+                  {e?.date == dateValue ? ( // && Seconds=="20:05:00"?
+                    e?.questions?.map((m, index) => {
+
+                      return index +1 == coValue ? (
+                        <>
+                          {quiz ? (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </>
+                      ) : null;
+                    })
+                  ) : (
+                    <h1 className="labelMain red">Match End</h1>
+                  )}
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
+
+----?
+      {timeArray?.questionTime?.map((t, k) => {
+        const Question=t?.questionNumber;
+        const Time=t?.time;
+        
+        return(
+          <>
+            {
+              time>"49"?
+              quizTime?.questions.map((q,k)=>{
+                return k+1==Question?
+                <>
+                  <h1>{q?.question}</h1>
+                </>
+                :
+                null
+              })
+              :
+              null
+            }
+          </>
+        )
+
+        //quizTime
+      })}
+
+      -----------------------------------28--------user------------------------------------
+import { async } from "@firebase/util";
+import React, { useEffect, useState } from "react";
+import QuizsDataService from "../services/quiz.services";
+import UserAnswerMapService from "../services/userAnswerMap.services";
+import Authentication from "../services/auth.services";
+import ConfigService from "../services/config.services";
+
+import Navbar from "./Navbar";
+import "./styles/user.css";
+export default function User() {
+  const [quiz, setQuiz] = useState("");
+  const [Seconds, setSeconds] = useState(0);
+  const [show, setShow] = useState([]);
+  const [dateValue, setDateValue] = useState("");
+  const [configValue, setConfigValue] = useState([]);
+  let [coValue, setCoValue] = useState(0);
+
+  // get All Quizs
+  useEffect(() => {
+    const getAlldata = async () => {
+      const data = await QuizsDataService.getAllQuizs();
+      // console.log(data?.docs?.map((doc) => ({ ...doc.data() })));
+      setShow(data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getAlldata();
+  }, []);
+
+  // current date
+  useEffect(() => {
+    var today = new Date();
+    var y = today.toLocaleString("en-IN", { year: "numeric" });
+    var d = today.toLocaleString("en-IN", { day: "2-digit" });
+    var m = today.toLocaleString("en-IN", { month: "2-digit" });
+    var r = y + "-" + m + "-" + d;
+    // console.log(r);
+    setDateValue(r);
+  }, []);
+
+  // current time
+  useEffect(() => {
+    const checkTime = (i) => {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    };
+
+    const startTime = () => {
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      // add a zero in front of numbers<10
+      m = checkTime(m);
+      s = checkTime(s);
+      setSeconds(h + ":" + m + ":" + s);
+      setTimeout(function () {
+        startTime();
+      }, 500);
+    };
+    startTime();
+  }, []);
+
+  // getAllConfig
+  useEffect(() => {
+    const configdData = async () => {
+      const config = await ConfigService.getAllConfig();
+      setConfigValue(
+        config?.docs?.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+      // console.log(config);
+    };
+    configdData();
+  }, []);
+
+  // questionFind
+
+  const questionFind = async () => {
+    const UserId = await Authentication.exitsUser();
+    console.log(UserId);
+    const data = await QuizsDataService.getAllQuizs();
+    const quizData=data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id }))
+console.log(quizData);
+// date
+var today = new Date();
+var y = today.toLocaleString("en-IN", { year: "numeric" });
+var d = today.toLocaleString("en-IN", { day: "2-digit" });
+var m = today.toLocaleString("en-IN", { month: "2-digit" });
+var r = y + "-" + m + "-" + d;
+    const quiz = quizData?.map((e) => {
+      console.log(e);
+      return e?.date == r ? e?.id : null;
+    });
+
+    console.log(quiz);
+
+    const ExitFind = await UserAnswerMapService.multipleConditional(
+      "userId",
+      UserId?.id,
+      "quizId",
+      quiz[1]
+    );
+    const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    // console.log(ExitFindValue);
+
+    const findUseMap = ExitFindValue?.map((e) => {
+      return e?.userMap.length;
+    });
+    console.log(findUseMap);
+    console.log(findUseMap?.length);
+
+    if (findUseMap[0] == undefined) {
+      setCoValue(0);
+    } else {
+      setCoValue(findUseMap[0]);
+      console.log(coValue);
+
+      if (findUseMap[0] == findUseMap[0]) {
+        setQuiz(false);
+      } else {
+        setQuiz(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    questionFind();
+  }, []);
+
+  // question select add database
+  const selectHendler = async (e) => {
+    console.log(e);
+
+    const UserId = await Authentication.exitsUser();
+    const eventName = UserId?.id + e?.quizQuestionName + e?.date;
+    alert(`question number ${e?.questionNumber} submit`);
+
+    if (e?.userAnswer == e?.currectAnswer) {
+      const firstTimeData = {
+        // eventName: {
+        quizId: e?.quizId,
+        userId: UserId?.id,
+        userMap: [
+          {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: true,
+          },
+        ],
+        IsSubmit: false,
+        IscurrectAnswer: true,
+        // },
+      };
+      const dataValue = await UserAnswerMapService.allRedayExitDoc(
+        eventName,
+        firstTimeData
+      );
+
+      if (dataValue == "create") {
+        questionFind();
+      }
+
+      if (dataValue == "update") {
+        const secondTimeData = {
+          questionNumber: e?.questionNumber,
+          userAnswer: e?.userAnswer,
+          currectAnswer: e?.currectAnswer,
+          IscurrectAnswer: true,
+        };
+
+        const dataValueSecond =
+          await UserAnswerMapService.updateUserAnswerMapService(
+            eventName,
+            secondTimeData
+          );
+
+        if (dataValueSecond == undefined) {
+          questionFind();
+        }
+
+        console.log(dataValueSecond);
+      }
+
+      console.log(dataValue);
+    } else {
+      // //
+
+      const firstTimeData = {
+        quizId: e?.quizId,
+        userId: UserId?.id,
+        userMap: [
+          {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: false,
+          },
+        ],
+        IsSubmit: false,
+        IscurrectAnswer: true,
+      };
+      const dataValue = await UserAnswerMapService.allRedayExitDoc(
+        eventName,
+        firstTimeData
+      );
+
+      if (dataValue == "create") {
+        questionFind();
+      }
+
+      if (dataValue == "update") {
+        const secondTimeData = {
+          questionNumber: e?.questionNumber,
+          userAnswer: e?.userAnswer,
+          currectAnswer: e?.currectAnswer,
+          IscurrectAnswer: false,
+        };
+
+        const dataValueSecond =
+          await UserAnswerMapService.updateUserAnswerMapService(
+            eventName,
+            secondTimeData
+          );
+
+        if (dataValueSecond == undefined) {
+          questionFind();
+        }
+
+        console.log(dataValueSecond);
+      }
+    }
+  };
+
+  // all question done after submit
+  const SubmitHandler = async (e) => {
+    const data = {
+      IsSubmit: true,
+    };
+
+    const UserId = await Authentication.exitsUser();
+    const eventName = UserId?.id + e?.quizQuestionName + e?.date;
+    alert(eventName);
+    const submit =
+      await UserAnswerMapService.updateUserAnswerMapServiceIsSubmit(
+        eventName,
+        data
+      );
+    console.log(submit);
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div className="card">
+        {Seconds}
+        <br />
+        <br />
+        <br />
+        {coValue}
+        <div className="container">
+          <label htmlFor="date">Question answer</label>
+          {show?.map((e) => {
+            const total = e?.questions?.length;
+            return (
+              <>
+                <div className="main">
+                  <h1 className="labelMain">
+                    {e.quizQuestionName} {e?.date}
+                  </h1>
+                  {coValue == total ? <h1 className="labelMain success">Completed</h1> : e?.date == dateValue ? ( // && Seconds=="20:05:00"?
+                    e?.questions?.map((m, index) => {
+                      const v = coValue == total ? coValue - 1 : coValue;
+                      return index == v ? (
+                        <>
+                          {quiz ? (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </>
+                      ) : null;
+                    })
+                  ) : (
+                    <h1 className="labelMain red">Match End</h1>
+                  )}
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
+-----------------------------28--------------------19----------------uer---------
+import { async } from "@firebase/util";
+import React, { useEffect, useState } from "react";
+import QuizsDataService from "../services/quiz.services";
+import UserAnswerMapService from "../services/userAnswerMap.services";
+import Authentication from "../services/auth.services";
+import ConfigService from "../services/config.services";
+
+import Navbar from "./Navbar";
+import "./styles/user.css";
+export default function User() {
+  const [quiz, setQuiz] = useState("");
+  const [Seconds, setSeconds] = useState(0);
+  const [show, setShow] = useState([]);
+  const [dateValue, setDateValue] = useState("");
+  const [configValue, setConfigValue] = useState([]);
+  let [coValue, setCoValue] = useState(0);
+  let [time, setTime] = useState(0);
+
+  // get All Quizs
+  useEffect(() => {
+    const getAlldata = async () => {
+      const data = await QuizsDataService.getAllQuizs();
+      // console.log(data?.docs?.map((doc) => ({ ...doc.data() })));
+      setShow(data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getAlldata();
+  }, []);
+
+  // current date
+  useEffect(() => {
+    var today = new Date();
+    var y = today.toLocaleString("en-IN", { year: "numeric" });
+    var d = today.toLocaleString("en-IN", { day: "2-digit" });
+    var m = today.toLocaleString("en-IN", { month: "2-digit" });
+    var r = y + "-" + m + "-" + d;
+    // console.log(r);
+    setDateValue(r);
+  }, []);
+
+  // current time
+  useEffect(() => {
+    const checkTime = (i) => {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    };
+
+    const startTime = () => {
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      // add a zero in front of numbers<10
+      m = checkTime(m);
+      s = checkTime(s);
+      setSeconds(h + ":" + m + ":" + s);
+      setTimeout(function () {
+        startTime();
+      }, 500);
+    };
+    startTime();
+  }, []);
+
+  // getAllConfig
+  useEffect(() => {
+    const configdData = async () => {
+      const config = await ConfigService.getAllConfig();
+      setConfigValue(
+        config?.docs?.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+      // console.log(config);
+    };
+    configdData();
+  }, []);
+
+  // questionFind
+
+  const questionFind = async () => {
+    const UserId = await Authentication.exitsUser();
+    console.log(UserId);
+    const data = await QuizsDataService.getAllQuizs();
+    const quizData=data?.docs?.map((doc) => ({ ...doc.data(), id: doc.id }))
+console.log(quizData);
+// date
+var today = new Date();
+var y = today.toLocaleString("en-IN", { year: "numeric" });
+var d = today.toLocaleString("en-IN", { day: "2-digit" });
+var m = today.toLocaleString("en-IN", { month: "2-digit" });
+var r = y + "-" + m + "-" + d;
+    const quiz = quizData?.map((e) => {
+      console.log(e);
+      return e?.date == r ? e?.id : null;
+    });
+
+    console.log(quiz);
+
+    const ExitFind = await UserAnswerMapService.multipleConditional(
+      "userId",
+      UserId?.id,
+      "quizId",
+      quiz[1]
+    );
+    const ExitFindValue = ExitFind?.docs?.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    // console.log(ExitFindValue);
+
+    const findUseMap = ExitFindValue?.map((e) => {
+      return e?.userMap.length;
+    });
+    console.log(findUseMap);
+    console.log(findUseMap?.length);
+
+    if (findUseMap[0] == undefined) {
+      setCoValue(0);
+    } else {
+      setCoValue(findUseMap[0]);
+      console.log(coValue);
+
+      if (findUseMap[0] == findUseMap[0]) {
+        setQuiz(false);
+      } else {
+        setQuiz(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    questionFind();
+  }, []);
+
+  // question select add database
+  const selectHendler = async (e) => {
+    console.log(e);
+
+    const UserId = await Authentication.exitsUser();
+    const eventName = UserId?.id + e?.quizQuestionName + e?.date;
+    alert(`question number ${e?.questionNumber} submit`);
+
+    if (e?.userAnswer == e?.currectAnswer) {
+      const firstTimeData = {
+        // eventName: {
+        quizId: e?.quizId,
+        userId: UserId?.id,
+        userMap: [
+          {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: true,
+          },
+        ],
+        IsSubmit: false,
+        IscurrectAnswer: true,
+        // },
+      };
+      const dataValue = await UserAnswerMapService.allRedayExitDoc(
+        eventName,
+        firstTimeData
+      );
+
+      if (dataValue == "create") {
+        questionFind();
+      }
+
+      if (dataValue == "update") {
+        const secondTimeData = {
+          questionNumber: e?.questionNumber,
+          userAnswer: e?.userAnswer,
+          currectAnswer: e?.currectAnswer,
+          IscurrectAnswer: true,
+        };
+
+        const dataValueSecond =
+          await UserAnswerMapService.updateUserAnswerMapService(
+            eventName,
+            secondTimeData
+          );
+
+        if (dataValueSecond == undefined) {
+          questionFind();
+        }
+
+        console.log(dataValueSecond);
+      }
+
+      console.log(dataValue);
+    } else {
+      // //
+
+      const firstTimeData = {
+        quizId: e?.quizId,
+        userId: UserId?.id,
+        userMap: [
+          {
+            questionNumber: e?.questionNumber,
+            userAnswer: e?.userAnswer,
+            currectAnswer: e?.currectAnswer,
+            IscurrectAnswer: false,
+          },
+        ],
+        IsSubmit: false,
+        IscurrectAnswer: true,
+      };
+      const dataValue = await UserAnswerMapService.allRedayExitDoc(
+        eventName,
+        firstTimeData
+      );
+
+      if (dataValue == "create") {
+        questionFind();
+      }
+
+      if (dataValue == "update") {
+        const secondTimeData = {
+          questionNumber: e?.questionNumber,
+          userAnswer: e?.userAnswer,
+          currectAnswer: e?.currectAnswer,
+          IscurrectAnswer: false,
+        };
+
+        const dataValueSecond =
+          await UserAnswerMapService.updateUserAnswerMapService(
+            eventName,
+            secondTimeData
+          );
+
+        if (dataValueSecond == undefined) {
+          questionFind();
+        }
+
+        console.log(dataValueSecond);
+      }
+    }
+  };
+
+  // all question done after submit
+  const SubmitHandler = async (e) => {
+    const data = {
+      IsSubmit: true,
+    };
+
+    const UserId = await Authentication.exitsUser();
+    const eventName = UserId?.id + e?.quizQuestionName + e?.date;
+    alert(eventName);
+    const submit =
+      await UserAnswerMapService.updateUserAnswerMapServiceIsSubmit(
+        eventName,
+        data
+      );
+    console.log(submit);
+  };
+
+  const timeOut=()=>{
+    var timeLeft = 30;    
+    var timerId = setInterval(countdown, 1000);
+    
+    function countdown() {
+      if (timeLeft == -1) {
+        clearTimeout(timerId);
+      } else {
+       setTime(timeLeft + ' seconds remaining') ;
+        timeLeft--;
+      }
+    }
+  }
+
+
+  return (
+    <>
+      <Navbar />
+      <div className="card">
+        {Seconds}
+        <br />
+        <br />
+        <br />
+        {coValue}
+        {time}
+        <button onClick={()=>timeOut()}>Time</button>
+        <div className="container">
+          <label htmlFor="date">Question answer</label>
+          {show?.map((e) => {
+            const total = e?.questions?.length;
+            return (
+              <>
+                <div className="main">
+                  <h1 className="labelMain">
+                    {e.quizQuestionName} {e?.date}
+                  </h1>
+                  {coValue == total ? <h1 className="labelMain success">Completed</h1> : e?.date == dateValue ? ( // && Seconds=="20:05:00"?
+                    e?.questions?.map((m, index) => {
+                      const v = coValue == total ? coValue - 1 : coValue;
+                      return index == v ? (
+                        <>
+                          {quiz ? (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                      disabled
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <h5>{index + 1}</h5>
+                              <div className="group">
+                                <label htmlFor="question" id="label">
+                                  {m.question}
+                                </label>
+                                <div className="row">
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.A}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "A",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.A}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.B}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "B",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.B}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.C}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.C}</label>
+                                  </div>
+                                  <div className="from_group">
+                                    <input
+                                      type="radio"
+                                      id="vehicle1"
+                                      name="vehicle1"
+                                      value={m?.D}
+                                      onClick={() => {
+                                        const data = {
+                                          questionNumber: index + 1,
+                                          userAnswer: "D",
+                                          currectAnswer: m?.answer,
+                                          quizId: e?.id,
+                                          quizQuestionName: e?.quizQuestionName,
+                                          date: e?.date,
+                                        };
+                                        selectHendler(data);
+                                        questionFind();
+                                      }}
+                                    />
+                                    <label for="vehicle1"> {m?.D}</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </>
+                      ) : null;
+                    })
+                  ) : (
+                    <h1 className="labelMain red">Match End</h1>
+                  )}
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}

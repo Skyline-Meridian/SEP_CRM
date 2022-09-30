@@ -1,17 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Authentication from "../services/auth.services";
+import UsersDataService from "../services/user.services";
 import styles from "./styles/login.module.css";
 
 export default function Login() {
   const [user, setUser] = useState("");
   const [res, setRes] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = await Authentication.login(user.email, user.password);
     console.log(data);
     setRes(data);
+    const value = await UsersDataService.getUser(data?.id);
+    value.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data().isAdmin);
+
+      if (doc.data().isAdmin == true) {
+        console.log("admin");
+        navigate("/admin");
+      } else {
+        console.log("user");
+        navigate("/user");
+      }
+    });
   };
 
   return (
@@ -21,27 +35,28 @@ export default function Login() {
           <img src="https://blog.hubspot.com/hubfs/google-quiz.jpg" />
         </div>
         <div className={`${styles.right}`}>
-        {
-          res?.errorCode
-        }
+          {res?.errorCode}
           <h5>Login</h5>
           <p>
-            Do have a account?{" "}
-            <Link to="/register">Creat Your Account</Link> it takes less than a
-            minute
+            Do have a account? <Link to="/register">Creat Your Account</Link> it
+            takes less than a minute
           </p>
           <div className={`${styles.inputs}`}>
-            <input type="text" placeholder="user name"
+            <input
+              type="text"
+              placeholder="user name"
               value={user.email}
               onChange={(e) => {
-                setUser({ ...user, email: e.target.value })
+                setUser({ ...user, email: e.target.value });
               }}
             />
             <br />
-            <input type="password" placeholder="password"
+            <input
+              type="password"
+              placeholder="password"
               value={user.password}
               onChange={(e) => {
-                setUser({ ...user, password: e.target.value })
+                setUser({ ...user, password: e.target.value });
               }}
             />
           </div>

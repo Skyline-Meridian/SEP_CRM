@@ -1,18 +1,34 @@
 import React, { useState } from "react";
 import styles from "./styles/register.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Authentication from "../services/auth.services";
-
+import UsersDataService from "../services/user.services";
 
 export default function Register() {
   const [user, setUser] = useState("");
   const [res, setRes] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-      const data = await Authentication.register(user.email, user.password);
-
+      const data = await Authentication.register(user?.email, user?.password);
       setRes(data);
+      const userData={
+        id:data?.id,
+        firstName:user?.firstName,
+        lastName:user?.lastName,
+        email:user?.email,
+        isAdmin:false
+      }
+      
+      const userTable=await UsersDataService.addUser(userData);
+      console.log(userTable);
+
+      if (userTable?.id !=null) {
+        console.log("admin");
+        navigate("/login");
+      }
+
 
   };
   return (
@@ -31,6 +47,24 @@ export default function Register() {
           <div className={`${styles.inputs}`}>
             <input
               type="text"
+              placeholder="Enter Your First Name"
+              value={user.firstName}
+              onChange={(e) => {
+                setUser({ ...user, firstName: e.target.value });
+              }}
+            />
+            <br />
+            <input
+              type="text"
+              placeholder="Enter Your Last Name"
+              value={user.lastName}
+              onChange={(e) => {
+                setUser({ ...user, lastName: e.target.value });
+              }}
+            />
+            <br />
+            <input
+              type="email"
               placeholder="user name"
               value={user.email}
               onChange={(e) => {

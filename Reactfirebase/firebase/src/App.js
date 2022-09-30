@@ -8,6 +8,10 @@ import Register from './components/Register';
 import Home from './components/Home';
 import Admin from './components/Admin';
 import User from './components/User';
+import AdminHistory from './components/AdminHistory';
+import UserHistory from './components/UserHistory';
+import QuizOut from './components/testApp/QuizOut';
+import QuizResult from './components/testApp/QuizResult';
 
 function App() {
   return (
@@ -19,7 +23,11 @@ function App() {
             <Route path='/register' element={<Register />} />
             {/*  */}
             <Route path='/admin' element={<Admin />} />
+            <Route path='/adminHistory' element={<AdminHistory />} />
             <Route path='/user' element={<User />} />
+            <Route path='/userHistory' element={<UserHistory />} />
+            <Route path='/out' element={<QuizOut />} />
+            <Route path='/result' element={<QuizResult />} />
           </Routes>
         </Router>
     </>

@@ -7,11 +7,14 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query, 
+  where
 } from "firebase/firestore";
 
 const userCollectionRef=collection(db,"users");
 
 class UsersDataService{
+    
     addUser=(newUser)=>{
         return addDoc(userCollectionRef,newUser);
     }
@@ -21,8 +24,9 @@ class UsersDataService{
     }
 
     getUser=(id)=>{
-        const userDoc= doc(db,"users",id)
-        return getDoc(userDoc);
+        const q = query(userCollectionRef, where("id", "==", id));
+        const querySnapshot = getDocs(q);
+        return querySnapshot
     }
     
     

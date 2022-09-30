@@ -1,0 +1,22 @@
+[
+    {
+        "time":"10",
+        "currentQuestionsIndex":"1"
+    },
+    {
+        "time":"20",
+        "currentQuestionsIndex":"2"
+    },
+    {
+        "time":"30",
+        "currentQuestionsIndex":"3"
+    },
+    {
+        "time":"40",
+        "currentQuestionsIndex":"4"
+    },
+    {
+        "time":"50",
+        "currentQuestionsIndex":"5"
+    }
+]

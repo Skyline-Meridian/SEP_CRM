@@ -8,28 +8,21 @@ import {
   deleteDoc,
   doc,
   setDoc,
-  query,
-  where,
 } from "firebase/firestore";
 
-const quizCollectionRef = collection(db, "quizs");
 
+const configCollectionRef = collection(db, "config");
 
-class QuizsDataService {
-  addQuizs = (newQuiz) => {
-    return addDoc(quizCollectionRef, newQuiz);
+class ConfigService {
+
+  addConfig = (newConfig) => {
+    console.log(newConfig);
+    return addDoc(configCollectionRef, newConfig);
   };
 
-
-  getAllQuizs = () => {
-    return getDocs(quizCollectionRef);
+  getAllConfig = () => {
+    return getDocs(configCollectionRef);
   };
-
-  findQuizData=(fieldName,fieldValue)=>{
-    const q = query(quizCollectionRef, where(fieldName, "==", fieldValue));
-    const querySnapshot = getDocs(q);
-    return querySnapshot
-}
 
   // genret custm id
   // createAutoId=async(data)=>{
@@ -52,4 +45,4 @@ class QuizsDataService {
   // };
 }
 
-export default new QuizsDataService();
+export default new ConfigService();

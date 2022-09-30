@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../components/firebaseConfig";
 
@@ -47,6 +49,34 @@ class Authentication {
 
     return data;
   };
+
+  exitsUser=async()=>{
+    let data;
+    await onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        return (data = {
+          id:uid
+        });
+      } else {
+        return (data = {
+          id:null
+        });
+      }
+    });
+    return data;
+  };
+
+  logOut=()=>{
+    signOut(auth).then(() => {
+      console.log("Sign-out successful.");
+    }).catch((error) => {
+      // An error happened.
+      console.log(error);
+    });
+  }
+
+
 }
 
 export default new Authentication();
